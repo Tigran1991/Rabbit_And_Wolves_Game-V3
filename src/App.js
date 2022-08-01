@@ -1,25 +1,52 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-function App() {
+import "./App.css";
+import Options from "./Options";
+import GameBoard from "./GameBoard";
+import { createCurrentMatrix, generateId } from "./RabbitWolfGameClass";
+import { gameCurrentState } from "./redux/features/gameStateReducerSlice";
+import { selectedBoard } from "./redux/features/boardsReducerSlice";
+
+const App = () => {
+  const dispatch = useDispatch();
+
+  const GAME_STATE = useSelector((state) => state.game);
+  const CURRENT_SIZE = useSelector((state) => state.boardSize.size);
+  const BOARDS = useSelector((state) => state.boards.boards);
+
+  const makeNewBoard = useCallback(() => {
+    dispatch(
+      selectedBoard({
+        id: generateId(),
+        size: CURRENT_SIZE,
+        matrix: createCurrentMatrix(CURRENT_SIZE),
+      })
+    );
+  }, [CURRENT_SIZE]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+      {!GAME_STATE.isOpen && (
+        <button
+          className="newGameBtn"
+          onClick={() => dispatch(gameCurrentState())}
         >
-          Learn React
-        </a>
-      </header>
+          New Game
+        </button>
+      )}
+
+      <div className="container">
+        {GAME_STATE.isOpen && <Options createNewGame={makeNewBoard} />}
+
+        <div className="boardField">
+          {BOARDS.map((board) => {
+            return <GameBoard boardData={board} key={board.id} />;
+          })}
+        </div>
+      </div>
     </div>
   );
-}
+};
 
 export default App;
