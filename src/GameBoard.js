@@ -17,27 +17,24 @@ const GameBoard = memo(({ boardData }) => {
 
   const ID = boardData.id;
   const SIZE = boardData.size;
-  const MATRIX = boardData.matrix.map((innerMatrix) => [...innerMatrix]);
+  const MATRIX = boardData.matrix;
   const WINNER = boardData.winner;
 
-  const UPDATE_BOARD = useCallback(
-    (sideMove) => {
-      const [updatedMatrix, winnerCharacter] = moveCharacters(
-        sideMove,
-        MATRIX,
-        SIZE
-      );
-      dispatch(
-        updateBoard({
-          id: ID,
-          size: SIZE,
-          matrix: updatedMatrix,
-          winner: winnerCharacter,
-        })
-      );
-    },
-    [ID, SIZE, MATRIX, dispatch]
-  );
+  const UPDATE_BOARD = (sideMove) => {
+    const [updatedMatrix, winnerCharacter] = moveCharacters(
+      sideMove,
+      MATRIX,
+      SIZE
+    );
+    dispatch(
+      updateBoard({
+        id: ID,
+        size: SIZE,
+        matrix: updatedMatrix,
+        winner: winnerCharacter,
+      })
+    );
+  };
 
   const boardStyle = {
     width: CELL_SIZE * SIZE + WIDTH_INDEX,
