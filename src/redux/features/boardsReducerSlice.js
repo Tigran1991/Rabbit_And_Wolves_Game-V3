@@ -1,16 +1,23 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export const boardsSlice = createSlice({
-  name: "size",
-  initialState: {
-    boards: [],
+const initialState = {
+  boards: {
+    past: [],
+    present: [],
+    future: [],
   },
+};
+
+export const boardsSlice = createSlice({
+  name: "boards",
+  initialState,
   reducers: {
     selectedBoard: (state, action) => {
-      state.boards = [...state.boards, action.payload];
+      state.boards.present = [...state.boards.present, action.payload];
     },
     updateBoard: (state, action) => {
-      state.boards = state.boards.map((board) => {
+      state.boards.present = state.boards.present.map((board) => {
+        state.boards.past = state.boards.past.concat(board);
         if (board.id === action.payload.id) {
           return {
             ...board,
@@ -21,9 +28,17 @@ export const boardsSlice = createSlice({
         return board;
       });
     },
+    undo: (state) => {
+      state.boards.future.push(state.boards.present[0]);
+      state.boards.present = [state.boards.past.pop()];
+    },
+    redo: (state) => {
+      state.boards.past.push(state.boards.present[0]);
+      state.boards.present = [state.boards.future.pop()];
+    },
   },
 });
 
-export const { selectedBoard, updateBoard } = boardsSlice.actions;
+export const { selectedBoard, updateBoard, undo, redo } = boardsSlice.actions;
 
 export default boardsSlice.reducer;

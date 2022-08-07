@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import "./App.css";
@@ -13,9 +13,9 @@ const App = () => {
 
   const GAME_STATE = useSelector((state) => state.game);
   const CURRENT_SIZE = useSelector((state) => state.boardSize.size);
-  const BOARDS = useSelector((state) => state.boards.boards);
+  const BOARDS = useSelector((state) => state.boards.boards.present);
 
-  const makeNewBoard = useCallback(() => {
+  const makeNewBoard = () => {
     dispatch(
       selectedBoard({
         id: generateId(),
@@ -23,7 +23,7 @@ const App = () => {
         matrix: createCurrentMatrix(CURRENT_SIZE),
       })
     );
-  }, [CURRENT_SIZE]);
+  };
 
   return (
     <div className="App">

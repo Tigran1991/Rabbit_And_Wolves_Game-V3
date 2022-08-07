@@ -1,10 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const initialState = {
+  isOpen: false,
+};
+
 export const gameStateSlice = createSlice({
   name: "game",
-  initialState: {
-    isOpen: false,
-  },
+  initialState,
   reducers: {
     gameCurrentState: (state) => {
       state.isOpen = !state.isOpen;
