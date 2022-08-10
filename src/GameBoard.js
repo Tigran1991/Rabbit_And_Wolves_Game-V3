@@ -55,7 +55,7 @@ const GameBoard = memo(({ boardData }) => {
         <ButtonElements updateMatrix={UPDATE_BOARD} key={"buttonsDiv" + ID} />
       )}
 
-      {<UndoRedo />}
+      {<UndoRedo id={ID} matrix={MATRIX} winner={WINNER} />}
     </div>
   );
 });

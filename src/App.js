@@ -6,7 +6,7 @@ import Options from "./Options";
 import GameBoard from "./GameBoard";
 import { createCurrentMatrix, generateId } from "./RabbitWolfGameClass";
 import { gameCurrentState } from "./redux/features/gameStateReducerSlice";
-import { selectedBoard } from "./redux/features/boardsReducerSlice";
+import { addNewBoard } from "./redux/features/boardsReducerSlice";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -17,7 +17,7 @@ const App = () => {
 
   const makeNewBoard = () => {
     dispatch(
-      selectedBoard({
+      addNewBoard({
         id: generateId(),
         size: CURRENT_SIZE,
         matrix: createCurrentMatrix(CURRENT_SIZE),
