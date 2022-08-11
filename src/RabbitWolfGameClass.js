@@ -59,10 +59,10 @@ const CHARACTERS_KEYS = Object.keys(CHARACTERS);
 
 export const createCurrentMatrix = (boardSize) => {
   const createInitialMatrix = (boardSize) => {
-    const MATRIX = new Array(boardSize)
+    const matrix = new Array(boardSize)
       .fill(0)
       .map(() => new Array(boardSize).fill(0));
-    return MATRIX;
+    return matrix;
   };
 
   const getRandomPositionsForCharacter = (initialMatrix, initialSize) => {
@@ -87,63 +87,63 @@ export const createCurrentMatrix = (boardSize) => {
     return matrix;
   };
 
-  const INITIAL_MATRIX = createInitialMatrix(boardSize);
+  const initialMatrix = createInitialMatrix(boardSize);
 
-  return setCharacterOnPlayfield(INITIAL_MATRIX, boardSize);
+  return setCharacterOnPlayfield(initialMatrix, boardSize);
 };
 
 export const moveCharacters = (moveDirection, matrix, size) => {
-  const MAIN_MATRIX = matrix.map((innerMatrix) => innerMatrix.slice());
-  const determineNearestPosition = ({ DISTANCES, POSITIONS }) =>
-    POSITIONS[DISTANCES.indexOf(Math.min(...DISTANCES))];
+  const mainMatrix = matrix.map((innerMatrix) => innerMatrix.slice());
+  const determineNearestPosition = ({ distances, positions }) =>
+    positions[distances.indexOf(Math.min(...distances))];
 
   const getCharactersCurrentPosition = (character) => {
-    const CHARACTER_POSITION = new Array(0);
-    MAIN_MATRIX.forEach((elem, elemIndex) => {
+    const characterPosition = new Array(0);
+    mainMatrix.forEach((elem, elemIndex) => {
       if (elem.includes(character)) {
         elem.filter((item, index) => {
           if (item === character) {
-            CHARACTER_POSITION.push(Array.of(elemIndex, index));
+            characterPosition.push(Array.of(elemIndex, index));
           }
         });
       }
     });
-    return CHARACTER_POSITION;
+    return characterPosition;
   };
 
   const moveCharacter = (character, positions) => {
-    const [CURRENT_X, CURRENT_Y] = positions.currentPosition;
-    const [NEW_POSITION_X, NEW_POSITION_Y] = positions.newPosition;
-    MAIN_MATRIX[CURRENT_X].splice(CURRENT_Y, 1, FREE_CELL);
-    MAIN_MATRIX[NEW_POSITION_X].splice(NEW_POSITION_Y, 1, character);
+    const [currentX, currentY] = positions.currentPosition;
+    const [newPositionX, newPositionY] = positions.newPosition;
+    mainMatrix[currentX].splice(currentY, 1, FREE_CELL);
+    mainMatrix[newPositionX].splice(newPositionY, 1, character);
   };
 
   const determineNextPositionCharacter = (position) => {
-    return MAIN_MATRIX[position[X]][position[Y]];
+    return mainMatrix[position[X]][position[Y]];
   };
 
   const isRabbitCanMove = (position) => {
-    const NEXT_POSITION_CHARACTER = determineNextPositionCharacter(position);
-    if (CHARACTERS[RABBIT].canMove.includes(NEXT_POSITION_CHARACTER)) {
+    const nextPositionCharacter = determineNextPositionCharacter(position);
+    if (CHARACTERS[RABBIT].canMove.includes(nextPositionCharacter)) {
       return true;
     }
   };
 
   const getNewPosition = (step, size) => {
-    const NEW_X = add(size, step[X]) % size;
-    const NEW_Y = add(size, step[Y]) % size;
-    return Array.of(NEW_X, NEW_Y);
+    const newX = add(size, step[X]) % size;
+    const newY = add(size, step[Y]) % size;
+    return Array.of(newX, newY);
   };
 
   const calculateRabbitNewPosition = (position, direction) => {
-    const STEP = determineAdjacentPosition(position, MOVE_DIRECTION[direction]);
-    return getNewPosition(STEP, size);
+    const step = determineAdjacentPosition(position, MOVE_DIRECTION[direction]);
+    return getNewPosition(step, size);
   };
 
   const getRabbitPositions = (moveSide) => {
-    const DIRECTION = moveSide;
+    const direction = moveSide;
     let currentPosition = getCharactersCurrentPosition(RABBIT)[X];
-    let newPosition = calculateRabbitNewPosition(currentPosition, DIRECTION);
+    let newPosition = calculateRabbitNewPosition(currentPosition, direction);
     if (isRabbitCanMove(newPosition) && isInRange(newPosition)) {
       return {
         currentPosition,
@@ -159,10 +159,10 @@ export const moveCharacters = (moveDirection, matrix, size) => {
   };
 
   const getRabbitNewPosition = (moveSide) => {
-    const RABBIT_POSITIONS = getRabbitPositions(moveSide);
-    if (RABBIT_POSITIONS) {
-      updateRabbitPosition(RABBIT_POSITIONS);
-      return RABBIT_POSITIONS.newPosition;
+    const rabbitPositions = getRabbitPositions(moveSide);
+    if (rabbitPositions) {
+      updateRabbitPosition(rabbitPositions);
+      return rabbitPositions.newPosition;
     }
   };
 
@@ -171,43 +171,43 @@ export const moveCharacters = (moveDirection, matrix, size) => {
   };
 
   const isInRange = (position) => {
-    const RANGE = getPlayfieldRange(size);
-    if (RANGE.includes(position[X]) && RANGE.includes(position[Y])) {
+    const range = getPlayfieldRange(size);
+    if (range.includes(position[X]) && range.includes(position[Y])) {
       return true;
     }
   };
 
   const isWolfCanMove = (position) => {
-    const NEXT_POSITION_CHARACTER = determineNextPositionCharacter(position);
-    if (CHARACTERS[WOLF].canMove.includes(NEXT_POSITION_CHARACTER)) {
+    const nextPositionCharacter = determineNextPositionCharacter(position);
+    if (CHARACTERS[WOLF].canMove.includes(nextPositionCharacter)) {
       return true;
     }
   };
 
   const getDistancesAndPositions = (wolfPosition, rabbitPosition) => {
-    const DISTANCES = new Array(0);
-    const POSITIONS = new Array(0);
+    const distances = new Array(0);
+    const positions = new Array(0);
     DIRECTION_MOVEMENT.forEach((direction) => {
-      const POSITION = determineAdjacentPosition(wolfPosition, direction);
-      if (isInRange(POSITION) && isWolfCanMove(POSITION) && rabbitPosition) {
-        const DISTANCE = calculateDistance(rabbitPosition, POSITION);
-        DISTANCES.push(DISTANCE);
-        POSITIONS.push(POSITION);
+      const position = determineAdjacentPosition(wolfPosition, direction);
+      if (isInRange(position) && isWolfCanMove(position) && rabbitPosition) {
+        const distance = calculateDistance(rabbitPosition, position);
+        distances.push(distance);
+        positions.push(position);
       }
     });
     return {
-      DISTANCES,
-      POSITIONS,
+      distances,
+      positions,
     };
   };
 
   const getPositions = (wolfPosition, rabbitPosition) => {
     let currentPosition = wolfPosition;
-    const DISTANCES_AND_POSITIONS = getDistancesAndPositions(
+    const distancesAndPositions = getDistancesAndPositions(
       wolfPosition,
       rabbitPosition
     );
-    let newPosition = determineNearestPosition(DISTANCES_AND_POSITIONS);
+    let newPosition = determineNearestPosition(distancesAndPositions);
     return {
       currentPosition,
       newPosition,
@@ -215,11 +215,11 @@ export const moveCharacters = (moveDirection, matrix, size) => {
   };
 
   const updateWolfPosition = (rabbitPosition) => (position) => {
-    const WOLF_POSITIONS = getPositions(position, rabbitPosition);
-    if (!WOLF_POSITIONS.newPosition) {
-      WOLF_POSITIONS.newPosition = WOLF_POSITIONS.currentPosition;
+    const wolfPositions = getPositions(position, rabbitPosition);
+    if (!wolfPositions.newPosition) {
+      wolfPositions.newPosition = wolfPositions.currentPosition;
     } else if (rabbitPosition && getCharactersCurrentPosition(HOUSE)[X]) {
-      moveCharacter(WOLF, WOLF_POSITIONS);
+      moveCharacter(WOLF, wolfPositions);
     }
   };
 
@@ -256,11 +256,11 @@ export const moveCharacters = (moveDirection, matrix, size) => {
     }
   };
 
-  const POSITIONS = getCharactersPositions(moveDirection);
+  const positions = getCharactersPositions(moveDirection);
 
-  updateWolvesPositions(POSITIONS);
+  updateWolvesPositions(positions);
 
-  const WINNER_CHARACTER = decideGameCourse();
+  const winnerCharacter = decideGameCourse();
 
-  return [MAIN_MATRIX, WINNER_CHARACTER];
+  return [mainMatrix, winnerCharacter];
 };

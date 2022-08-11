@@ -1,4 +1,5 @@
 import React from "react";
+import * as Styled from "./styled";
 import { useDispatch, useSelector } from "react-redux/es/exports";
 import { undo } from "./redux/features/boardsReducerSlice";
 import { redo } from "./redux/features/boardsReducerSlice";
@@ -23,12 +24,8 @@ let UndoRedo = (props) => {
 
   return (
     <>
-      <button className="undo" onClick={undoHandler}>
-        Undo
-      </button>
-      <button className="redo" onClick={redoHandler}>
-        Redo
-      </button>
+      <Styled.UndoBtn onClick={undoHandler}>Undo</Styled.UndoBtn>
+      <Styled.RedoBtn onClick={redoHandler}>Redo</Styled.RedoBtn>
     </>
   );
 };

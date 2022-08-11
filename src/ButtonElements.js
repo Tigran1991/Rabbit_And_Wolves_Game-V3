@@ -1,28 +1,26 @@
 import { memo, React } from "react";
-
-import "./App.css";
+import * as Styled from "./styled";
 
 const ButtonElements = memo(({ updateMatrix }) => {
   return (
     <>
-      <div className="buttons-div">
-        <button
-          className="move-right"
+      <Styled.ButtonsField>
+        <Styled.MoveRight
           onClick={() => updateMatrix("move-right")}
-        ></button>
-        <button
+        ></Styled.MoveRight>
+        <Styled.MoveBottom
           className="move-bottom"
           onClick={() => updateMatrix("move-bottom")}
-        ></button>
-        <button
+        ></Styled.MoveBottom>
+        <Styled.MoveLeft
           className="move-left"
           onClick={() => updateMatrix("move-left")}
-        ></button>
-        <button
+        ></Styled.MoveLeft>
+        <Styled.MoveTop
           className="move-top"
           onClick={() => updateMatrix("move-top")}
-        ></button>
-      </div>
+        ></Styled.MoveTop>
+      </Styled.ButtonsField>
     </>
   );
 });

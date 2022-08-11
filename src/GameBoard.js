@@ -1,7 +1,6 @@
-import { memo, React, useCallback } from "react";
+import { memo, React } from "react";
 import { useDispatch } from "react-redux";
-
-import "./App.css";
+import * as Styled from "./styled";
 import Playfield from "./Playfield";
 import ButtonElements from "./ButtonElements";
 import { moveCharacters } from "./RabbitWolfGameClass";
@@ -15,21 +14,21 @@ const GameBoard = memo(({ boardData }) => {
   const WIDTH_INDEX = 44;
   const HEIGHT_INDEX = 83;
 
-  const ID = boardData.id;
-  const SIZE = boardData.size;
-  const MATRIX = boardData.matrix;
-  const WINNER = boardData.winner;
+  const id = boardData.id;
+  const size = boardData.size;
+  const matrix = boardData.matrix;
+  const winner = boardData.winner;
 
-  const UPDATE_BOARD = (sideMove) => {
+  const updateBoardHandler = (sideMove) => {
     const [updatedMatrix, winnerCharacter] = moveCharacters(
       sideMove,
-      MATRIX,
-      SIZE
+      matrix,
+      size
     );
     dispatch(
       updateBoard({
-        id: ID,
-        size: SIZE,
+        id: id,
+        size: size,
         matrix: updatedMatrix,
         winner: winnerCharacter,
       })
@@ -37,26 +36,29 @@ const GameBoard = memo(({ boardData }) => {
   };
 
   const boardStyle = {
-    width: CELL_SIZE * SIZE + WIDTH_INDEX,
-    height: CELL_SIZE * SIZE + HEIGHT_INDEX,
+    width: CELL_SIZE * size + WIDTH_INDEX,
+    height: CELL_SIZE * size + HEIGHT_INDEX,
   };
 
   return (
-    <div className="boardContainer">
-      <div className="board" style={boardStyle}>
-        {WINNER !== undefined ? (
-          <h1 className="winner"> {WINNER} WIN ! </h1>
+    <Styled.BoardContainer>
+      <Styled.Board style={boardStyle}>
+        {winner !== undefined ? (
+          <Styled.Winner> {winner} WIN ! </Styled.Winner>
         ) : (
-          <Playfield matrix={MATRIX} key={"playfield" + ID} />
+          <Playfield matrix={matrix} key={"playfield" + id} />
         )}
-      </div>
+      </Styled.Board>
 
-      {WINNER === undefined && (
-        <ButtonElements updateMatrix={UPDATE_BOARD} key={"buttonsDiv" + ID} />
+      {winner === undefined && (
+        <ButtonElements
+          updateMatrix={updateBoardHandler}
+          key={"buttonsDiv" + id}
+        />
       )}
 
-      {<UndoRedo id={ID} matrix={MATRIX} winner={WINNER} />}
-    </div>
+      {<UndoRedo id={id} matrix={matrix} winner={winner} />}
+    </Styled.BoardContainer>
   );
 });
 

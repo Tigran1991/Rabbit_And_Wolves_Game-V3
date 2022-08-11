@@ -1,12 +1,11 @@
 import React from "react";
-
-import "./App.css";
+import * as Styled from "./styled";
 import CharacterCell from "./CharacterCell";
 import { FREE_CELL } from "./RabbitWolfGameClass";
 
 const Playfield = ({ matrix }) => {
   return (
-    <div className="playfield">
+    <Styled.Playfield>
       {matrix.map((row, X) =>
         row.map((rowItem, Y) =>
           rowItem !== 0 ? (
@@ -16,7 +15,7 @@ const Playfield = ({ matrix }) => {
           )
         )
       )}
-    </div>
+    </Styled.Playfield>
   );
 };
 
