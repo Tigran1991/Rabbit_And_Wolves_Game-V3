@@ -11,13 +11,13 @@ let UndoRedo = (props) => {
   const future = useSelector((state) => state.boards.boards.future);
 
   const undoHandler = () => {
-    if (past.length !== 0) {
+    if (past.length) {
       dispatch(undo(props.id));
     }
   };
 
   const redoHandler = () => {
-    if (future.length !== 0) {
+    if (future.length) {
       dispatch(redo(props.id));
     }
   };

@@ -33,41 +33,40 @@ export const boardsSlice = createSlice({
       });
     },
     undo: (state, action) => {
-      state.boards.past.reverse().map((pastBoard) => {
-        if (pastBoard.id === action.payload) {
-          state.boards.past.splice(state.boards.past.indexOf(pastBoard), 1);
-          state.boards.present.map((presentBoard) => {
-            if (presentBoard.id === action.payload) {
-              state.boards.future.push(presentBoard);
-              state.boards.present.splice(
-                state.boards.present.indexOf(presentBoard),
-                1,
-                pastBoard
-              );
-            }
-          });
-        }
-      });
+      if (state.boards.past.some((board) => board.id === action.payload)) {
+        const board = state.boards.past
+          .filter((pastBoard) => pastBoard.id === action.payload)
+          .pop();
+        state.boards.past.splice(state.boards.past.indexOf(board), 1);
+        state.boards.present.map((presentBoard) => {
+          if (presentBoard.id === action.payload) {
+            state.boards.future.push(presentBoard);
+            state.boards.present.splice(
+              state.boards.present.indexOf(presentBoard),
+              1,
+              board
+            );
+          }
+        });
+      }
     },
     redo: (state, action) => {
-      state.boards.future.reverse().map((futureBoard) => {
-        if (futureBoard.id === action.payload) {
-          state.boards.future.splice(
-            state.boards.future.indexOf(futureBoard),
-            1
-          );
-          state.boards.present.map((presentBoard) => {
-            if (presentBoard.id === action.payload) {
-              state.boards.past.push(presentBoard);
-              state.boards.present.splice(
-                state.boards.present.indexOf(presentBoard),
-                1,
-                futureBoard
-              );
-            }
-          });
-        }
-      });
+      if (state.boards.future.some((board) => board.id === action.payload)) {
+        const board = state.boards.future
+          .filter((futureBoard) => futureBoard.id === action.payload)
+          .pop();
+        state.boards.future.splice(state.boards.future.indexOf(board), 1);
+        state.boards.present.map((presentBoard) => {
+          if (presentBoard.id === action.payload) {
+            state.boards.past.push(presentBoard);
+            state.boards.present.splice(
+              state.boards.present.indexOf(presentBoard),
+              1,
+              board
+            );
+          }
+        });
+      }
     },
   },
 });
